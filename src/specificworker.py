@@ -113,9 +113,9 @@ class SpecificWorker(GenericWorker):
 
     @QtCore.Slot()
     def compute(self):
-        start = timer()
+        #start = timer()
         self.readState()
-        end = timer()
+        #end = timer()
         #print (end - start) * 1000
 
     #####################################################
@@ -126,12 +126,11 @@ class SpecificWorker(GenericWorker):
             for x in self.motorParams:
                 try:
                     state = MotorState()
-                    state.pos=dynamixel.read2ByteRx(self.serial_port_number, 1, x.busId, addr_pos)
-                    state.vel = dynamixel.read2ByteRx(self.serial_port_number, 1, x.busId, addr_vel)
-                    state.isMoving = dynamixel.read1ByteRx(self.serial_port_number, 1, x.busId, addr_isMov)
-                    state.temperature = dynamixel.read1ByteRx(self.serial_port_number, 1, x.busId, addr_temp)
+                    state.pos=dynamixel.read2ByteTxRx(self.serial_port_number, 1, x.busId, addr_pos)
+                    #state.vel = dynamixel.read2ByteTxRx(self.serial_port_number, 1, x.busId, addr_vel)
+                    #state.isMoving = dynamixel.read1ByteTxRx(self.serial_port_number, 1, x.busId, addr_isMov)
+                    #state.temperature = dynamixel.read1ByteTxRx(self.serial_port_number, 1, x.busId, addr_temp)
 
-                    print(x.name+' '+str(state.pos))
                 except Exception, e:
                     pass
 

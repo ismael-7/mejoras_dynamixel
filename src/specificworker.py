@@ -23,7 +23,7 @@ import numpy as np
 #from pydynamixel import dynamixel
 #from pydynamixel import registers
 #from pydynamixel import packets
-os.sys.path.append('$HOME/dynamixel_functions_py')             # Path setting
+os.sys.path.append('$HOME/software/DynamixelSDK-3.4.3/python/dynamixel_functions_py')             # Path setting
 
 import dynamixel_functions as dynamixel                     # Uses Dynamixel SDK library
 
@@ -227,10 +227,10 @@ class SpecificWorker(GenericWorker):
 	#		e = UnknownMotorException()
 	#		e.what = "Error " + motor + " does not exist"
 	#		raise e
+		pass
 
 	#
 	# setSyncVelocity
-	#
 	def setSyncVelocity(self, listGoals):
 		pass
 

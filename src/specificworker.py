@@ -73,7 +73,6 @@ class SpecificWorker(GenericWorker):
 		
 
 	def setParams(self, params):
-		#i=0
 		
 		with open("/home/odroid/robocomp/components/hexapod-robot/dynamixelpython/etc/config","r") as f:
 			for linea in f.readlines():
@@ -88,23 +87,23 @@ class SpecificWorker(GenericWorker):
 				    #separacion = linea.split("=")
 				    #motorParams = separacion[1]
 				if "Params_" in linea:
-				    separacion = linea.split("=")
-				    
-				    #Buscando ID
-				    parametros = separacion[1].split(",")
-				    name = parametros[0]
-				    param = MotorParams()
-				    param.name = name
-				    param.busId = int (parametros[1])
-				    param.invertedSign = parametros[2]
-				    param.minPos = float(parametros[3])
-				    param.maxPos = float(parametros[4])
-				    param.zero = parametros[5]
-				    param.maxVel = parametros[6]
-				    param.stepsRev = parametros[7]
-				    param.maxDegrees = float(parametros[8].replace("\n",""))
-				    
-				    self.motorParams.append(param)
+					separacion = linea.split("=")
+
+					#Buscando ID
+					parametros = separacion[1].split(",")
+					name = parametros[0]
+					param = MotorParams()
+					param.name = name
+					param.busId = int (parametros[1])
+					param.invertedSign = parametros[2]
+					param.minPos = float(parametros[3])
+					param.maxPos = float(parametros[4])
+					param.zero = parametros[5]
+					param.maxVel = parametros[6]
+					param.stepsRev = parametros[7]
+					param.maxDegrees = float(parametros[8].replace("\n",""))
+
+					self.motorParams.append(param)
 		
 		self.serial_port_number=dynamixel.portHandler(self.serial_port)
 		if not dynamixel.openPort(self.serial_port_number):
@@ -126,10 +125,10 @@ class SpecificWorker(GenericWorker):
 	
 	@QtCore.Slot()
 	def readState(self):
-		#with QtCore.QMutexLocker(self.mutex_bus):
-		#	for x in self.motorParams:
-		#		try:
-		#			state = MotorState()
+		with QtCore.QMutexLocker(self.mutex_bus):
+			for x in self.motorParams:
+				try:
+					state = MotorState()
 		#			state.pos = float(dynamixel.get_position(self.bus, x.busId, False, num_error_attempts=1))
 		#			state.pos=(state.pos) * (2.618 + 2.618) / 1023 -2.618
 		#			if x.invertedSign == "true":
@@ -140,8 +139,8 @@ class SpecificWorker(GenericWorker):
 		#			#packet = packets.get_read_packet(m.busId,registers.PRESENT_TEMPERATURE,2)
 		#								#packet = packets.get_read_packet(m.busId,registers.PRESENT_SPEED,2)
 		#								#print packet
-		#		except Exception, e:
-		#			print  e
+				except Exception, e:
+					print  e
 		pass
 			
 

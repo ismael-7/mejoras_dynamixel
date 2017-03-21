@@ -118,27 +118,27 @@ class SpecificWorker(GenericWorker):
 
     @QtCore.Slot()
     def readState(self):
-        with QtCore.QMutexLocker(self.mutex_bus):
-            for x in self.motorParams:
-                try:
-                    state = MotorState()
-                    state.pos = float(dynamixel.get_position(self.bus, x.busId, False, num_error_attempts=1))
-                    state.pos=(state.pos) * (2.618 + 2.618) / 1023 -2.618
-                    if x.invertedSign == "true":
-                        state.pos=-state.pos
-                    state.isMoving = dynamixel.get_is_moving(self.bus, x.busId, False, num_error_attempts=1)
-                    self.motorStateMapWrite[x.name] = state
-                    #state.temperature=
-                    #packet = packets.get_read_packet(m.busId,registers.PRESENT_TEMPERATURE,2)
-                                        #packet = packets.get_read_packet(m.busId,registers.PRESENT_SPEED,2)
-                                        #print packet
+        for x in self.motorParams:
+            try:
+                state = MotorState()
+                state.pos = float(dynamixel.get_position(self.bus, x.busId, False, num_error_attempts=1))
+                state.pos=(state.pos) * (2.618 + 2.618) / 1023 -2.618
+                if x.invertedSign == "true":
+                    state.pos=-state.pos
+                state.isMoving = dynamixel.get_is_moving(self.bus, x.busId, False, num_error_attempts=1)
+                self.motorStateMapWrite[x.name] = state
+                #state.temperature=
+                #packet = packets.get_read_packet(m.busId,registers.PRESENT_TEMPERATURE,2)
+                                    #packet = packets.get_read_packet(m.busId,registers.PRESENT_SPEED,2)
+                                    #print packet
+                with QtCore.QMutexLocker(self.mutex_bus):
                     self.motorStateMapReadOnly=self.motorStateMapArray[self.lastIndex]
                     #print  self.motorStateMapReadOnly[self.motorParams[1].name]
                     self.lastIndex=self.lastIndex^1
                     self.motorStateMapWrite=self.motorStateMapArray[self.lastIndex]
 
-                except Exception, e:
-                    print  e
+            except Exception, e:
+                print  e
 
 
 #
@@ -197,8 +197,7 @@ class SpecificWorker(GenericWorker):
     # getAllMotorState
     #
     def getAllMotorState(self):
-        #with QtCore.QMutexLocker(self.mutex_bus):
-
+        #with QtCore.QMutexLocker(self.mutex_bus)
             return self.motorStateMapReadOnly
 
 

@@ -45,7 +45,6 @@ from RoboCompJointMotor import *
 from jointmotorI import *
 
 class SpecificWorker(GenericWorker):
-
     lisPos=collections.deque()
     bool=0;
     motorParams = []
@@ -64,8 +63,16 @@ class SpecificWorker(GenericWorker):
         super(SpecificWorker, self).__init__(proxy_map)
         params = ()
         self.setParams(params)
-        self.timer.timeout.connect(self.compute)
-        self.timer.start(5)
+
+        self.mutex_goals=QtCore.QMutex(QtCore.QMutex.Recursive)
+
+        self.timer2 = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.readState)
+        self.timer.start(200)
+        self.timer2.timeout.connect(self.ComprobarLista2)
+        self.timer2.start(50)
+
+        self.maxGoals=6
         #self.timerS = QtCore.QTimer()
         #self.timerS.timeout.connect(self.readState)
         #self.timerS.start(250)
@@ -108,11 +115,11 @@ class SpecificWorker(GenericWorker):
 
         return True
 
-    @QtCore.Slot()
-    def compute(self):
-        #self.ComprobarLista()
-        self.ComprobarLista2()
-        self.readState()
+    #@QtCore.Slot()
+    #def compute(self):
+        ##self.ComprobarLista()
+        #self.ComprobarLista2()
+        #self.readState()
 
 #####################################################
 
@@ -169,13 +176,15 @@ class SpecificWorker(GenericWorker):
             traceback.print_exc()
             print e
 
+    @QtCore.Slot()
     def ComprobarLista2(self):
         if len(self.L_L_Goals) == 0:
             return
         with QtCore.QMutexLocker(self.mutex_bus):
             try:
                 for x in range(0, len(self.L_L_Goals)):
-                    m = self.L_L_Goals.pop(0)
+                    with QtCore.QMutexLocker(self.mutex_goals):
+                        m = self.L_L_Goals.pop(0)
                     for goal in m:
                         for x in self.motorParams:
                             if x.name == goal.name:
@@ -256,7 +265,14 @@ class SpecificWorker(GenericWorker):
     # setSyncPosition
     #
     def setSyncPosition(self, listGoals):
-        self.L_L_Goals.append(listGoals)
+        with QtCore.QMutexLocker(self.mutex_goals):
+            if len(self.L_L_Goals)==self.maxGoals:
+                e= HardwareFailedException()
+                e.what="Demasiadas peticiones intentalo mas tarde"
+                raise e
+            else:
+                self.L_L_Goals.append(listGoals)
+
 
     #
     # getMotorStateMap

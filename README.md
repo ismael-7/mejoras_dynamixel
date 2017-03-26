@@ -35,3 +35,4 @@ After editing the new config file we can run the component:
 
     --Ice.Config=config
 mejoras_dynamixel
+mejoras dynamixel

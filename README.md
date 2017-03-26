@@ -34,3 +34,4 @@ After editing the new config file we can run the component:
 ```dynamixelpython ```
 
     --Ice.Config=config
+mejoras_dynamixel
